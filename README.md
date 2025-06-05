@@ -48,7 +48,7 @@ El servicio estará disponible en `http://localhost:9898`
 
 **Login Usuario Principal**
 ```http
-POST /api/auth/login
+POST /login
 {
   "username": "usuario@ejemplo.com",
   "password": "contraseña123"
@@ -56,7 +56,7 @@ POST /api/auth/login
 ```
 **Login Usuario Tenant**
 ```http
-POST /api/auth/tenant/register
+POST /login
 Headers: X-Tenant-ID: empresa1
 {
   "username": "usuario@empresa1.com",
@@ -66,7 +66,7 @@ Headers: X-Tenant-ID: empresa1
 
 **Registrar Usuario Principal**
 ```http
-POST /api/auth/principal/register
+POST /register
 {
   "username": "admin@ejemplo.com",
   "password": "contraseña123",
@@ -77,7 +77,7 @@ POST /api/auth/principal/register
 
 **Registrar Usuario Tenant**
 ```http
-POST /api/auth/tenant/register
+POST /register
 Headers: X-Tenant-ID: empresa1
 {
   "username": "user@empresa1.com",
@@ -91,7 +91,7 @@ Headers: X-Tenant-ID: empresa1
 
 **Obtener usuario actual**
 ```http
-GET /api/users/profile
+GET /profile
 Headers: Authorization: Bearer tu-jwt-token
 ```
 
@@ -103,6 +103,7 @@ Crear las siguientes bases de datos:
 CREATE DATABASE platform_db;
 CREATE DATABASE tenant_db;
 ```
+o usar el docker `docker-compose up`
 
 ## 🔧 Estructura del Proyecto
 

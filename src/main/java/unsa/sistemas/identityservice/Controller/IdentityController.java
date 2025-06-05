@@ -32,7 +32,6 @@ import unsa.sistemas.identityservice.Utils.ResponseWrapper;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("user")
 public class IdentityController {
     private final ComposeUserDetailService userService;
     private final JWTUtil jwtTokenUtil;
