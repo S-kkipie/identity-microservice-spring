@@ -7,11 +7,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import unsa.sistemas.identityservice.Config.TenantContext;
 import unsa.sistemas.identityservice.DTOs.RegisterRequest;
-import unsa.sistemas.identityservice.Models.PrincipalUser;
+import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
 import unsa.sistemas.identityservice.Models.Role;
-import unsa.sistemas.identityservice.Models.TenantUser;
+import unsa.sistemas.identityservice.Models.Tenant.TenantUser;
 import unsa.sistemas.identityservice.Security.SecurityPrincipal;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class ComposeUserDetailService implements UserDetailsService {
 
     public UserDetails createUser(RegisterRequest request) throws IllegalStateException {
         if (TenantContext.getTenantId() != null) {
+            log.debug("Creating new tenant user: {} in {}", request.getUsername(), TenantContext.getTenantId());
             return tenantUserService.createUser(TenantUser.builder()
                     .username(request.getUsername())
                     .createdAt(LocalDateTime.now())
@@ -46,6 +48,7 @@ public class ComposeUserDetailService implements UserDetailsService {
                     .role(Role.ROLE_USER)
                     .build());
         } else {
+            log.debug("Creating new Principal user: {} in paltform_db", request.getUsername());
             return principalUserService.createUser(PrincipalUser.builder()
                     .username(request.getUsername())
                     .createdAt(LocalDateTime.now())
@@ -53,14 +56,13 @@ public class ComposeUserDetailService implements UserDetailsService {
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ROLE_SUPERADMIN)
+                    .role(Role.ROLE_USER)
                     .build());
         }
     }
 
     public UserDetails findCurrentUser() {
         UserDetails user = securityPrincipal.getLoggedInPrincipal();
-        log.debug(user.getUsername());
         if (user == null) {
             throw new RuntimeException("No authenticated user found");
         }

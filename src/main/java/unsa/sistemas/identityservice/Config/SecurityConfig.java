@@ -31,6 +31,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class SecurityConfig {
     private final JWTFilter jwtFilter;
+    private final TenantFilter tenantFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,7 +46,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new TenantFilter(), AnonymousAuthenticationFilter.class);
+                .addFilterAfter(tenantFilter, AnonymousAuthenticationFilter.class);
 
         return http.build();
     }

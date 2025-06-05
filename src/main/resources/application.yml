@@ -1,12 +1,19 @@
 spring:
   application:
     name: IDENTITY-SERVICE
-
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 eureka:
   client:
     service-url:
       defaultZone : http://localhost:8761/eureka/
 
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.transaction: DEBUG
 
 server:
   port: 9898

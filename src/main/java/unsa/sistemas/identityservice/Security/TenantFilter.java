@@ -9,9 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 import unsa.sistemas.identityservice.Config.TenantContext;
 
+@Service
 @AllArgsConstructor
 public class TenantFilter extends OncePerRequestFilter {
 

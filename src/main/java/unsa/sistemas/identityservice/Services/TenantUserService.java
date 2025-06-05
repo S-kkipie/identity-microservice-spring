@@ -5,11 +5,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import unsa.sistemas.identityservice.Models.TenantUser;
-import unsa.sistemas.identityservice.Repositories.TenantUserRepository;
+import org.springframework.transaction.annotation.Transactional;
+import unsa.sistemas.identityservice.Models.Tenant.TenantUser;
+import unsa.sistemas.identityservice.Repositories.Tenant.TenantUserRepository;
 
 @Service
 @AllArgsConstructor
+@Transactional(transactionManager = "tenantTransactionManager")
 public class TenantUserService implements UserDetailsService {
     private final TenantUserRepository repository;
 
@@ -23,6 +25,8 @@ public class TenantUserService implements UserDetailsService {
         if(repository.findByUsername(tenantUser.getUsername()).isPresent()){
             throw new IllegalStateException(tenantUser.getUsername());
         }
-        return repository.save(tenantUser);
+        TenantUser user = repository.save(tenantUser);
+        repository.flush();
+        return user;
     }
 }

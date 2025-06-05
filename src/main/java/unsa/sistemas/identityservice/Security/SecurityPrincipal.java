@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import unsa.sistemas.identityservice.Models.PrincipalUser;
-import unsa.sistemas.identityservice.Models.TenantUser;
-import unsa.sistemas.identityservice.Repositories.PrincipalUserRepository;
-import unsa.sistemas.identityservice.Repositories.TenantUserRepository;
+import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
+import unsa.sistemas.identityservice.Models.Tenant.TenantUser;
+import unsa.sistemas.identityservice.Repositories.Principal.PrincipalUserRepository;
+import unsa.sistemas.identityservice.Repositories.Tenant.TenantUserRepository;
 
 import java.util.Collection;
 

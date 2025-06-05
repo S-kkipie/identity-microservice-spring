@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ import unsa.sistemas.identityservice.Utils.JWTUtil;
 import unsa.sistemas.identityservice.Utils.ResponseHandler;
 import unsa.sistemas.identityservice.Utils.ResponseWrapper;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("user")
@@ -102,6 +104,8 @@ public class IdentityController {
         try {
             UserDetails newUser = userService.createUser(request);
 
+            log.debug("New user: {}", newUser.getUsername());
+
             final String token = jwtTokenUtil.generateToken(newUser);
 
             final String refreshToken = jwtTokenUtil.generateRefreshToken(newUser);
@@ -110,10 +114,12 @@ public class IdentityController {
                     new Auth(token, refreshToken));
 
         } catch (IllegalStateException e) {
+            log.error(e.getMessage());
             return ResponseHandler.generateResponse("Failed to register a user", HttpStatus.BAD_REQUEST,
                     "The username is already taken");
 
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseHandler.generateResponse("Failed to register a user", HttpStatus.BAD_REQUEST,
                     "A error occurred while trying to register a user");
         }

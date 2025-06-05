@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import unsa.sistemas.identityservice.Models.PrincipalUser;
-import unsa.sistemas.identityservice.Repositories.PrincipalUserRepository;
+import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
+import unsa.sistemas.identityservice.Repositories.Principal.PrincipalUserRepository;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class PrincipalUserService implements UserDetailsService {
 
     public UserDetails createUser(PrincipalUser principalUser) {
         if(repository.findByUsername(principalUser.getUsername()).isPresent()){
-            throw new IllegalStateException(principalUser.getUsername());
+            throw new IllegalStateException("This username is already taken: "+ principalUser.getUsername());
         }
         return repository.save(principalUser);
     }
