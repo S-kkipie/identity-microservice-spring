@@ -3,7 +3,7 @@
 Servicio de autenticación y autorización multi-tenant con Spring Boot.
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/S-kkipie/identity-microservice-spring)
-## Características
+## 🚀 Características
 
 - **Multi-Tenant**: Cada tenant tiene su propia base de datos
 - **Autenticación JWT**: Tokens seguros para autenticación
