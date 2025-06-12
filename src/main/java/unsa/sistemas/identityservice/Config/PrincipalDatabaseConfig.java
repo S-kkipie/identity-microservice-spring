@@ -14,6 +14,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 @EnableJpaRepositories(
@@ -55,6 +56,6 @@ public class PrincipalDatabaseConfig {
     @Bean(name = "platformTransactionManager")
     public PlatformTransactionManager platformTransactionManager(
             @Qualifier("platformEntityManager") LocalContainerEntityManagerFactoryBean platformEntityManager) {
-        return new JpaTransactionManager(platformEntityManager.getObject());
+        return new JpaTransactionManager(Objects.requireNonNull(platformEntityManager.getObject()));
     }
 }

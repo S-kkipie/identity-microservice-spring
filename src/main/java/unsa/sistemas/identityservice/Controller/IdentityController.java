@@ -25,7 +25,7 @@ import unsa.sistemas.identityservice.Docs.AuthResponse;
 import unsa.sistemas.identityservice.Docs.BadResponse;
 import unsa.sistemas.identityservice.Docs.UserResponse;
 import unsa.sistemas.identityservice.Services.ComposeUserDetailService;
-import unsa.sistemas.identityservice.Utils.JWTUtil;
+import unsa.sistemas.identityservice.Security.JWTUtil;
 import unsa.sistemas.identityservice.Utils.ResponseHandler;
 import unsa.sistemas.identityservice.Utils.ResponseWrapper;
 

@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16
-    container_name: postgres-dev
+    container_name: identity-service
     ports:
       - "5432:5432"
     environment:

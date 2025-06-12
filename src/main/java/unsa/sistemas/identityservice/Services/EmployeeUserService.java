@@ -6,14 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import unsa.sistemas.identityservice.Models.Tenant.TenantUser;
-import unsa.sistemas.identityservice.Repositories.Tenant.TenantUserRepository;
+import unsa.sistemas.identityservice.Models.Tenant.EmployeeUser;
+import unsa.sistemas.identityservice.Repositories.Tenant.EmployeeUserRepository;
 
 @Service
 @AllArgsConstructor
 @Transactional(transactionManager = "tenantTransactionManager")
-public class TenantUserService implements UserDetailsService {
-    private final TenantUserRepository repository;
+public class EmployeeUserService implements UserDetailsService {
+    private final EmployeeUserRepository repository;
 
 
     @Override
@@ -21,11 +21,11 @@ public class TenantUserService implements UserDetailsService {
         return repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    public UserDetails createUser(TenantUser tenantUser) {
-        if(repository.findByUsername(tenantUser.getUsername()).isPresent()){
-            throw new IllegalStateException(tenantUser.getUsername());
+    public UserDetails createUser(EmployeeUser employeeUser) {
+        if(repository.findByUsername(employeeUser.getUsername()).isPresent()){
+            throw new IllegalStateException(employeeUser.getUsername());
         }
-        TenantUser user = repository.save(tenantUser);
+        EmployeeUser user = repository.save(employeeUser);
         repository.flush();
         return user;
     }

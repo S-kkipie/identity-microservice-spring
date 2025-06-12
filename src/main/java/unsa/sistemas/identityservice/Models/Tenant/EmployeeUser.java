@@ -14,10 +14,10 @@ import java.util.List;
 @Data
 @SuperBuilder
 @Entity
-@Table(name = "tenant_users")
+@Table(name = "users")
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TenantUser extends AbstractUser implements  UserDetails {
+public class EmployeeUser extends AbstractUser implements  UserDetails {
     @Override
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {

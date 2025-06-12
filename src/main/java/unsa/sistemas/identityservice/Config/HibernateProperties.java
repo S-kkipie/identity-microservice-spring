@@ -1,10 +1,10 @@
 package unsa.sistemas.identityservice.Config;
 
 
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.hibernate.cfg.AvailableSettings;
 import lombok.Getter;
 
 import java.util.Properties;
@@ -15,34 +15,34 @@ import java.util.Properties;
 @Getter
 public class HibernateProperties {
 
-    @Value("${hibernate.connection.url}")
+    @Value("${connection.baseUrl}")
     private String baseUrl;
 
-    @Value("${hibernate.connection.username}")
+    @Value("${connection.username}")
     private String username;
 
-    @Value("${hibernate.connection.password}")
+    @Value("${connection.password}")
     private String password;
 
-    @Value("${hibernate.connection.driver_class}")
+    @Value("${connection.driver_class}")
     private String driverClass;
 
-    @Value("${hibernate.platform.database}")
+    @Value("${platform.database}")
     private String platformDatabase;
 
-    @Value("${hibernate.tenant.database}")
+    @Value("${tenant.database}")
     private String tenantDatabase;
 
-    @Value("${hibernate.dialect}")
+    @Value("${dialect}")
     private String dialect;
 
-    @Value("${hibernate.hbm2ddl.auto}")
+    @Value("${hbm2ddl.auto}")
     private String hbm2ddlAuto;
 
-    @Value("${hibernate.show_sql}")
+    @Value("${show_sql}")
     private String showSql;
 
-    @Value("${hibernate.format_sql}")
+    @Value("${format_sql}")
     private String formatSql;
 
     public String getPlatformUrl() {
@@ -68,11 +68,20 @@ public class HibernateProperties {
     private Properties getProperties(Properties props) {
         props.setProperty(AvailableSettings.JAKARTA_JDBC_USER, getUsername());
         props.setProperty(AvailableSettings.JAKARTA_JDBC_PASSWORD, getPassword());
+        return getPrivateProperties(props);
+    }
+
+    private Properties getPrivateProperties(Properties props) {
         props.setProperty(AvailableSettings.JAKARTA_JDBC_DRIVER, getDriverClass());
         props.setProperty(AvailableSettings.DIALECT, getDialect());
         props.setProperty(AvailableSettings.JAKARTA_HBM2DDL_DATABASE_ACTION, getHbm2ddlAuto());
         props.setProperty(AvailableSettings.SHOW_SQL, getShowSql());
         props.setProperty(AvailableSettings.FORMAT_SQL, getFormatSql());
         return props;
+    }
+
+    public Properties getCommonProperties() {
+        Properties props = new Properties();
+        return getPrivateProperties(props);
     }
 }

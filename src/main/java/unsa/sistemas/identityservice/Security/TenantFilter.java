@@ -9,29 +9,36 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
-import unsa.sistemas.identityservice.Config.TenantContext;
+import unsa.sistemas.identityservice.Config.MultiTenantImpl.DataSourceBasedMultiTenantConnectionProviderImpl;
+import unsa.sistemas.identityservice.Config.Context.OrgContext;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class TenantFilter extends OncePerRequestFilter {
+    DataSourceBasedMultiTenantConnectionProviderImpl dataSourceBasedMultiTenantConnectionProviderImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String tenantId = request.getHeader("X-Tenant-Id");
+        String orgCode = request.getHeader("X-Org-Code");
+        log.debug("Request Org Code : {}", orgCode);
+        boolean hasAccess = orgCode != null &&
+                dataSourceBasedMultiTenantConnectionProviderImpl
+                        .getDataSources()
+                        .containsKey(orgCode);
 
-        //TODO implement tenantService
-        boolean hasAccess = true;
-
-        if (tenantId != null && !tenantId.isBlank() && hasAccess) {
-            TenantContext.setTenantId(tenantId);
+        if (hasAccess && !orgCode.isBlank()) {
+            log.debug("Access Granted");
+            OrgContext.setOrgCode(orgCode);
         }
 
         try {
             filterChain.doFilter(request, response);
         } finally {
-            TenantContext.clear();
+            OrgContext.clear();
         }
     }
 }

@@ -1,8 +1,10 @@
-package unsa.sistemas.identityservice.Config;
+package unsa.sistemas.identityservice.Config.MultiTenantImpl;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@Getter
 @Component
 public class DataSourceBasedMultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl<String> {
     private final DataSource defaultDataSource;
@@ -26,17 +29,23 @@ public class DataSourceBasedMultiTenantConnectionProviderImpl extends AbstractDa
         return defaultDataSource;
     }
 
-    public void addDataSource(String tenantId, DataSource dataSource) {
-        dataSources.put(tenantId, dataSource);
+    public void addDataSource(String orgCode, DataSource dataSource) throws DuplicateKeyException {
+        if (!dataSources.containsKey(orgCode)) {
+            dataSources.put(orgCode, dataSource);
+            log.debug("Adding database connection for orgCode: {}", orgCode);
+            return;
+        }
+        log.debug("Code already registered: {}", orgCode);
+        throw new DuplicateKeyException(orgCode);
     }
 
     @Override
-    protected DataSource selectDataSource(String tenantId) {
-        log.debug("Selecting data source: {}", tenantId);
-        if (!dataSources.containsKey(tenantId)) {
-            throw new RuntimeException("Tenant " + tenantId + " not found");
+    protected DataSource selectDataSource(String orgCode) {
+        log.debug("Selecting data source: {}", orgCode);
+        if (!dataSources.containsKey(orgCode)) {
+            throw new RuntimeException("Organization Code " + orgCode + " not found");
         }
-        return dataSources.get(tenantId);
+        return dataSources.get(orgCode);
     }
 
 }

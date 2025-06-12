@@ -17,12 +17,10 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "principal_users")
+@Table(name = "users")
 
-public class PrincipalUser extends AbstractUser implements UserDetails{
-    private boolean isAdmin = true;
-
-
+public class PrincipalUser extends AbstractUser implements UserDetails {
+    private Boolean hasPremiumAccess;
 
     @Override
     @Transient

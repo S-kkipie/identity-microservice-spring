@@ -14,11 +14,15 @@ public class PrincipalUserService implements UserDetailsService {
     private final PrincipalUserRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public PrincipalUser loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    public UserDetails createUser(PrincipalUser principalUser) {
+    public PrincipalUser loadUserById(String id) throws UsernameNotFoundException {
+        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException(id));
+    }
+
+    public PrincipalUser createUser(PrincipalUser principalUser) {
         if(repository.findByUsername(principalUser.getUsername()).isPresent()){
             throw new IllegalStateException("This username is already taken: "+ principalUser.getUsername());
         }

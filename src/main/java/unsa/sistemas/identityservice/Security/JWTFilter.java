@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 import unsa.sistemas.identityservice.Services.ComposeUserDetailService;
-import unsa.sistemas.identityservice.Utils.JWTUtil;
 
 import java.io.IOException;
 

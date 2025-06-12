@@ -11,6 +11,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import unsa.sistemas.identityservice.Config.MultiTenantImpl.CurrentTenantIdentifierResolverImpl;
+import unsa.sistemas.identityservice.Config.MultiTenantImpl.DataSourceBasedMultiTenantConnectionProviderImpl;
 
 import javax.sql.DataSource;
 import java.util.Objects;

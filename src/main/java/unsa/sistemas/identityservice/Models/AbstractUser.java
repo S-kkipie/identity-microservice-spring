@@ -29,6 +29,10 @@ public abstract class AbstractUser implements Serializable {
 
     private String firstName;
     private String lastName;
+    private String country;
+    private Integer phoneNumber;
+    private Boolean enabled;
+
 
     protected LocalDateTime createdAt;
     protected LocalDateTime updatedAt;

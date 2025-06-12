@@ -34,4 +34,10 @@ public class RegisterRequest {
 
     @Schema(description = "User's last name", example = "Doe")
     private String lastName;
+
+    @Schema(description = "User's phone number", example = "987654321")
+    private Integer phoneNumber;
+
+    @Schema(description = "User's country", example = "Peru")
+    private String country;
 }
