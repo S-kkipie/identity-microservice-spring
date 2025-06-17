@@ -31,6 +31,7 @@ public abstract class AbstractUser implements Serializable {
     private String lastName;
     private String country;
     private Integer phoneNumber;
+    private String imageUrl;
     private Boolean enabled;
 
 

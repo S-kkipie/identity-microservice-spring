@@ -24,15 +24,21 @@ public class TenantFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String orgCode = request.getHeader("X-Org-Code");
-        log.debug("Request Org Code : {}", orgCode);
-        boolean hasAccess = orgCode != null &&
-                dataSourceBasedMultiTenantConnectionProviderImpl
-                        .getDataSources()
-                        .containsKey(orgCode);
 
-        if (hasAccess && !orgCode.isBlank()) {
-            log.debug("Access Granted");
+        if (orgCode != null && !orgCode.isBlank()) {
+            orgCode = orgCode.trim();
+            log.debug("Request Org Code : {}", orgCode);
+
+            if (!dataSourceBasedMultiTenantConnectionProviderImpl.getDataSources().containsKey(orgCode)) {
+                log.debug("Org Code {} is not registered in the system", orgCode);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Invalid  Org Code");
+                return;
+            }
+
             OrgContext.setOrgCode(orgCode);
+
+        } else {
+            log.debug("X-Org-Code header is missing");
         }
 
         try {

@@ -34,6 +34,14 @@ public class ComposeUserDetailService implements UserDetailsService {
         }
     }
 
+    public UserDetails loadUserById(String id) throws UsernameNotFoundException {
+        if (OrgContext.getOrgCode() != null) {
+            return employeeUserService.loadUserById(id);
+        } else {
+            return principalUserService.loadUserById(id);
+        }
+    }
+
     public UserDetails createUser(RegisterRequest request) throws IllegalStateException {
         log.debug("Using context : {}", OrgContext.getOrgCode());
         if (OrgContext.getOrgCode() != null) {

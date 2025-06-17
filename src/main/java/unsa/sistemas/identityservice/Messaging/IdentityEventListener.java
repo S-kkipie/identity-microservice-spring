@@ -33,18 +33,22 @@ public class IdentityEventListener {
     @RabbitListener(queues = "${app.rabbitmq.queue}")
     public void handleNewDatabase(CreateDataBaseEvent event) throws Exception {
         String decryptedJson = encryptionUtil.decrypt(event.getEncryptedPayload());
+        //The database always are orgCode+_identity_db
         // The username provided is actually the id of the user
         Map<String, String> dbInfo = new ObjectMapper().readValue(decryptedJson, new TypeReference<>() {
         });
 
         log.debug(dbInfo.toString());
 
-        String url = dbInfo.get("url");
+        String baseUrl = dbInfo.get("url");
         String username = dbInfo.get("username");
         String password = dbInfo.get("password");
-        String dbName = dbInfo.get("dbName");
         String code = dbInfo.get("orgCode");
         UserDetails user = principalUserService.loadUserById(username);
+
+        String dbName = code + "_identity_db";
+
+        String url = baseUrl + "/" + dbName;
 
         try {
             DataSource newDataSource = DataSourceBuilder.create()

@@ -30,6 +30,7 @@ public class InitialUserLoader implements ApplicationRunner {
                     .username(properties.getUsername())
                     .password(passwordEncoder.encode(properties.getPassword()))
                     .role(Role.ROLE_SUPERADMIN)
+                    .hasPremiumAccess(true)
                     .build();
 
             principalUserService.createUser(user);

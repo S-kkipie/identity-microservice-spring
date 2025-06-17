@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import unsa.sistemas.identityservice.Models.Role;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,7 @@ public class JWTUtil {
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
     private SecretKey key;
+
     // Initializes the key after the class is instantiated and the jwtSecret is injected,
     // preventing the repeated creation of the key and enhancing performance
     @PostConstruct
@@ -52,19 +54,23 @@ public class JWTUtil {
 
 
     public String generateToken(UserDetails userDetails) {
-        return doGenerateToken(userDetails.getUsername());
+        return doGenerateToken(userDetails.getUsername(), userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(authority -> Role.valueOf(authority.getAuthority()))
+                .orElse(Role.ROLE_USER));
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
-        return doGenerateRefreshToken( userDetails.getUsername());
+        return doGenerateRefreshToken(userDetails.getUsername());
     }
 
-    private String doGenerateToken(String subject) {
+    private String doGenerateToken(String subject, Role role) {
         Header<?> header = Jwts.header();
         header.setType("JWT");
         return Jwts.builder()
                 .setHeader((Map<String, Object>) header)
                 .setSubject(subject)
+                .claim("role", role.toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs * 1000L))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -72,7 +78,7 @@ public class JWTUtil {
     }
 
     // refresh token
-    private String doGenerateRefreshToken( String subject) {
+    private String doGenerateRefreshToken(String subject) {
         Header<?> header = Jwts.header();
         header.setType("JWT");
         return Jwts.builder()

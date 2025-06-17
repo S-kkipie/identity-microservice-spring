@@ -27,8 +27,7 @@ app:
     secure-key: 12345678901234567890123456789012
   rabbitmq:
     exchange: tenant.identity.exchange
-    queue: tenant.database.queue
-    routing-key: tenant.database.created
+    queue: identity.service.queue
 
 
 logging:
