@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import unsa.sistemas.identityservice.Models.Role;
 import unsa.sistemas.identityservice.Security.TenantFilter;
 import unsa.sistemas.identityservice.Security.UserAuthFilter;
 import unsa.sistemas.identityservice.Services.ComposeUserDetailService;
@@ -39,7 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("login", "register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/admin/**").hasRole("SUPERADMIN")
+                        .requestMatchers("/principal-admin/**").hasAuthority(Role.ROLE_PRINCIPAL_ADMIN.name())
+                        .requestMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(userAuthFilter, UsernamePasswordAuthenticationFilter.class)

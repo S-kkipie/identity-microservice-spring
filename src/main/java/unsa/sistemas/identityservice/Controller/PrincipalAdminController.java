@@ -10,9 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import unsa.sistemas.identityservice.DTOs.AbstractUserDTO;
-import unsa.sistemas.identityservice.Models.Role;
-import unsa.sistemas.identityservice.Models.Tenant.User;
-import unsa.sistemas.identityservice.Services.UserService;
+import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
+import unsa.sistemas.identityservice.Services.PrincipalUserService;
 import unsa.sistemas.identityservice.Utils.ResponseHandler;
 import unsa.sistemas.identityservice.Utils.ResponseWrapper;
 
@@ -20,9 +19,9 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/admin/users")
-public class AdminController {
-    private final UserService userService;
+@RequestMapping("/principal-admin/users")
+public class PrincipalAdminController {
+    private final PrincipalUserService principalUserService;
 
     @Operation(summary = "Get all principal users")
     @ApiResponses({
@@ -31,7 +30,7 @@ public class AdminController {
     })
     @GetMapping
     public ResponseEntity<ResponseWrapper<Object>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+        List<PrincipalUser> users = principalUserService.getAllUsers();
         return ResponseHandler.generateResponse("Users fetched", HttpStatus.OK, users);
     }
 
@@ -43,7 +42,7 @@ public class AdminController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Object>> getUserById(@PathVariable String id) {
         try {
-            User user = userService.loadUserById(id);
+            PrincipalUser user = principalUserService.loadUserById(id);
             return ResponseHandler.generateResponse("User found", HttpStatus.OK, user);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User not found", HttpStatus.NOT_FOUND, null);
@@ -59,7 +58,7 @@ public class AdminController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Object>> updateUser(@PathVariable String id, @Valid @RequestBody AbstractUserDTO dto) {
         try {
-            User user = userService.updateUser(id, dto);
+            PrincipalUser user = principalUserService.updateUser(id, dto);
             return ResponseHandler.generateResponse("User updated", HttpStatus.OK, user);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User not found", HttpStatus.NOT_FOUND, e.getMessage());
@@ -74,35 +73,10 @@ public class AdminController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper<Object>> deleteUser(@PathVariable String id) {
         try {
-            userService.deleteUser(id);
+            principalUserService.deleteUser(id);
             return ResponseHandler.generateResponse("User deleted", HttpStatus.OK, null);
         } catch (Exception e) {
             return ResponseHandler.generateResponse("User not found", HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
-
-    @Operation(summary = "Create a new user")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User created", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Invalid input or user already exists", content = @Content(mediaType = "application/json"))
-    })
-    @PostMapping
-    public ResponseEntity<ResponseWrapper<Object>> createUser(@Valid @RequestBody AbstractUserDTO userDTO) {
-        try {
-            User user = new User();
-            user.setUsername(userDTO.getUsername());
-            user.setPassword(userDTO.getPassword());
-            user.setRole(userDTO.getRole());
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setCountry(userDTO.getCountry());
-            user.setPhoneNumber(userDTO.getPhoneNumber());
-            user.setImageUrl(userDTO.getImageUrl());
-            user.setRole(Role.ROLE_EMPLOYEE);
-            User createdUser = userService.createUser(user);
-            return ResponseHandler.generateResponse("User created", HttpStatus.CREATED, createdUser);
-        } catch (Exception e) {
-            return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.BAD_REQUEST, null);
         }
     }
 }

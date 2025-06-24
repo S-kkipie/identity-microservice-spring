@@ -11,7 +11,7 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.springframework.stereotype.Service;
 import unsa.sistemas.identityservice.Config.HibernateProperties;
-import unsa.sistemas.identityservice.Models.Tenant.EmployeeUser;
+import unsa.sistemas.identityservice.Models.Tenant.User;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class SchemaService {
 
             try {
                 Metadata metadata = new MetadataSources(registry)
-                        .addAnnotatedClass(EmployeeUser.class)
+                        .addAnnotatedClass(User.class)
                         .buildMetadata();
 
                 var export = new SchemaExport();

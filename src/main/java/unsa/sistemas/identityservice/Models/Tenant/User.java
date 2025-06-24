@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "users")
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class EmployeeUser extends AbstractUser implements  UserDetails {
+public class User extends AbstractUser implements  UserDetails {
     @Override
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {

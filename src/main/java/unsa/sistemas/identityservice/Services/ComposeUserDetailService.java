@@ -11,7 +11,7 @@ import unsa.sistemas.identityservice.Config.Context.OrgContext;
 import unsa.sistemas.identityservice.DTOs.RegisterRequest;
 import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
 import unsa.sistemas.identityservice.Models.Role;
-import unsa.sistemas.identityservice.Models.Tenant.EmployeeUser;
+import unsa.sistemas.identityservice.Models.Tenant.User;
 import unsa.sistemas.identityservice.Security.SecurityPrincipal;
 
 import java.time.LocalDateTime;
@@ -21,14 +21,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ComposeUserDetailService implements UserDetailsService {
     private final PrincipalUserService principalUserService;
-    private final EmployeeUserService employeeUserService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final SecurityPrincipal securityPrincipal;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (OrgContext.getOrgCode() != null) {
-            return employeeUserService.loadUserByUsername(username);
+            return userService.loadUserByUsername(username);
         } else {
             return principalUserService.loadUserByUsername(username);
         }
@@ -36,7 +36,7 @@ public class ComposeUserDetailService implements UserDetailsService {
 
     public UserDetails loadUserById(String id) throws UsernameNotFoundException {
         if (OrgContext.getOrgCode() != null) {
-            return employeeUserService.loadUserById(id);
+            return userService.loadUserById(id);
         } else {
             return principalUserService.loadUserById(id);
         }
@@ -46,7 +46,7 @@ public class ComposeUserDetailService implements UserDetailsService {
         log.debug("Using context : {}", OrgContext.getOrgCode());
         if (OrgContext.getOrgCode() != null) {
             log.debug("Creating new tenant user: {} in {}", request.getUsername(), OrgContext.getOrgCode());
-            return employeeUserService.createUser(EmployeeUser.builder()
+            return userService.createUser(User.builder()
                     .username(request.getUsername())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -68,7 +68,7 @@ public class ComposeUserDetailService implements UserDetailsService {
                     .country(request.getCountry())
                     .lastName(request.getLastName())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ROLE_USER)
+                    .role(Role.ROLE_PRINCIPAL_USER)
                     .build());
         }
     }

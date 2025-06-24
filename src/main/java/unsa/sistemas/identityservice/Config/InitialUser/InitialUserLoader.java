@@ -29,7 +29,7 @@ public class InitialUserLoader implements ApplicationRunner {
             PrincipalUser user = PrincipalUser.builder()
                     .username(properties.getUsername())
                     .password(passwordEncoder.encode(properties.getPassword()))
-                    .role(Role.ROLE_SUPERADMIN)
+                    .role(Role.ROLE_PRINCIPAL_ADMIN)
                     .hasPremiumAccess(true)
                     .build();
 

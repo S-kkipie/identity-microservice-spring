@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
-import unsa.sistemas.identityservice.Models.Tenant.EmployeeUser;
+import unsa.sistemas.identityservice.Models.Tenant.User;
 import unsa.sistemas.identityservice.Repositories.Principal.PrincipalUserRepository;
-import unsa.sistemas.identityservice.Repositories.Tenant.EmployeeUserRepository;
+import unsa.sistemas.identityservice.Repositories.Tenant.UserRepository;
 
 import java.util.Collection;
 
@@ -19,7 +19,7 @@ import java.util.Collection;
 public class SecurityPrincipal {
 
     private final PrincipalUserRepository principalUserRepository;
-    private final EmployeeUserRepository employeeUserRepository;
+    private final UserRepository userRepository;
 
     public UserDetails getLoggedInPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -27,8 +27,8 @@ public class SecurityPrincipal {
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
 
-            if (principal instanceof EmployeeUser employeeUser) {
-                return employeeUserRepository.findByUsername(employeeUser.getUsername()).orElseThrow(() -> new UsernameNotFoundException(employeeUser.getUsername()));
+            if (principal instanceof User employeeUser) {
+                return userRepository.findByUsername(employeeUser.getUsername()).orElseThrow(() -> new UsernameNotFoundException(employeeUser.getUsername()));
             }
 
             if (principal instanceof PrincipalUser principalUser) {

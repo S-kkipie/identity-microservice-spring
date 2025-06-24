@@ -19,7 +19,7 @@ import unsa.sistemas.identityservice.Config.Context.OrgContext;
 @Service
 @AllArgsConstructor
 public class TenantFilter extends OncePerRequestFilter {
-    DataSourceBasedMultiTenantConnectionProviderImpl dataSourceBasedMultiTenantConnectionProviderImpl;
+    private final DataSourceBasedMultiTenantConnectionProviderImpl dataSourceBasedMultiTenantConnectionProviderImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {

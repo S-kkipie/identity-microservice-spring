@@ -29,12 +29,12 @@ public class IdentityEventListener {
     private final SchemaService schemaService;
     private final DataSourceBasedMultiTenantConnectionProviderImpl connectionProvider;
     private final EncryptionUtil encryptionUtil;
+    private final DataSourceBasedMultiTenantConnectionProviderImpl dataSourceBasedMultiTenantConnectionProviderImpl;
 
     @RabbitListener(queues = "${app.rabbitmq.queue}")
     public void handleNewDatabase(CreateDataBaseEvent event) throws Exception {
         String decryptedJson = encryptionUtil.decrypt(event.getEncryptedPayload());
-        //The database always are orgCode+_identity_db
-        // The username provided is actually the id of the user
+        //The database always is orgCode+_identity_db
         Map<String, String> dbInfo = new ObjectMapper().readValue(decryptedJson, new TypeReference<>() {
         });
 
@@ -44,11 +44,15 @@ public class IdentityEventListener {
         String username = dbInfo.get("username");
         String password = dbInfo.get("password");
         String code = dbInfo.get("orgCode");
-        UserDetails user = principalUserService.loadUserById(username);
+        UserDetails user = principalUserService.loadUserByUsername(username);
 
         String dbName = code + "_identity_db";
-
         String url = baseUrl + "/" + dbName;
+
+        if (dataSourceBasedMultiTenantConnectionProviderImpl.getDataSources().containsKey(code)) {
+            log.warn("DataSource for tenant {} already exists, skipping creation.", code);
+            return;
+        }
 
         try {
             DataSource newDataSource = DataSourceBuilder.create()
@@ -66,8 +70,19 @@ public class IdentityEventListener {
                 }
             }
 
-            schemaService.createSchemaForTenant(newDataSource, password);
 
+            try {
+                boolean physicalExists = dbInfo.get("physicalExists").equals("true");
+                if (physicalExists) {
+                    log.info("Physical database for tenant {} exists, skipping schema creation.", code);
+                }
+            } catch (Exception e) {
+                log.warn("Database does not have physicalExists field, assuming it does not exist");
+                log.info("Physical database for tenant {} does not exist, proceeding with schema creation.", code);
+                schemaService.createSchemaForTenant(newDataSource, password);
+            }
+
+            log.debug("Creating DataSource for tenant: {}, URL: {}, Username: {}, pwd: {}", code, url, username, password);
             connectionProvider.addDataSource(code, newDataSource);
 
         } catch (Exception e) {
