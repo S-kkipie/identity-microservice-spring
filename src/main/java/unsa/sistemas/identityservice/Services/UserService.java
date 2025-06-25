@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import unsa.sistemas.identityservice.Config.AppProperties;
 import unsa.sistemas.identityservice.DTOs.AbstractUserDTO;
 import unsa.sistemas.identityservice.Models.Tenant.User;
 import unsa.sistemas.identityservice.Repositories.Tenant.UserRepository;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 @Transactional(transactionManager = "tenantTransactionManager")
 public class UserService implements UserDetailsService {
     private final UserRepository repository;
-    private final AppProperties properties;
 
 
     @Override
@@ -63,8 +61,8 @@ public class UserService implements UserDetailsService {
         repository.deleteById(id);
     }
 
-    public Page<User> getAllUsers(int page) {
-        Pageable pageable = PageRequest.of(page, properties.getPageSize());
-        return repository.findAll(pageable);
+    public Page<User> findUsersPageable(int page, int size, String text) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findByFirstNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrLastNameContainingIgnoreCase(text, text, text, pageable);
     }
 }

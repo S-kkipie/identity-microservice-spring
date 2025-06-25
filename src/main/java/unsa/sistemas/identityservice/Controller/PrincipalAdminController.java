@@ -26,7 +26,9 @@ public class PrincipalAdminController {
     private final PrincipalUserService principalUserService;
 
     @Operation(summary = "Get a list of users", parameters = {
-            @Parameter(name = "page", description = "Page number for pagination", required = true, in = ParameterIn.QUERY, example = "0")
+            @Parameter(name = "page", description = "Page number for pagination", in = ParameterIn.QUERY, example = "1"),
+            @Parameter(name = "size", description = "Size of page", in = ParameterIn.QUERY, example = "10"),
+            @Parameter(name = "text", description = "Text for search in name or email", in = ParameterIn.QUERY, example = "pepito")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Invalid pagination parameters",
@@ -34,8 +36,8 @@ public class PrincipalAdminController {
             @ApiResponse(responseCode = "400", description = "Error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping
-    public ResponseEntity<ResponseWrapper<Object>> getAllUsers(@RequestParam(defaultValue = "0") int page) {
-        Page<PrincipalUser> users = principalUserService.getAllUsers(page);
+    public ResponseEntity<ResponseWrapper<Object>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "") String search) {
+        Page<PrincipalUser> users = principalUserService.findPrincipalUsersPageable(page, size, search);
         return ResponseHandler.generateResponse("Users fetched", HttpStatus.OK, users);
     }
 

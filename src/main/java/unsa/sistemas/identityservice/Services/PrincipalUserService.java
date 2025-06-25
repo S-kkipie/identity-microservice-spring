@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import unsa.sistemas.identityservice.Config.AppProperties;
 import unsa.sistemas.identityservice.DTOs.AbstractUserDTO;
 import unsa.sistemas.identityservice.Models.Principal.PrincipalUser;
 import unsa.sistemas.identityservice.Repositories.Principal.PrincipalUserRepository;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PrincipalUserService implements UserDetailsService {
     private final PrincipalUserRepository repository;
-    private final AppProperties properties;
 
     @Override
     public PrincipalUser loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,8 +57,8 @@ public class PrincipalUserService implements UserDetailsService {
         repository.deleteById(id);
     }
 
-    public Page<PrincipalUser> getAllUsers(int page) {
-        Pageable pageable = PageRequest.of(page, properties.getPageSize());
-        return repository.findAll(pageable);
+    public Page<PrincipalUser> findPrincipalUsersPageable(int page, int size, String text) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findByFirstNameContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrLastNameContainingIgnoreCase(text, text, text, pageable);
     }
 }

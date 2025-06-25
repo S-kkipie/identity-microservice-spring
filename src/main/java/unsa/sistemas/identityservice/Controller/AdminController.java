@@ -27,17 +27,18 @@ public class AdminController {
     private final UserService userService;
 
     @Operation(summary = "Get a list of users", parameters = {
-            @Parameter(name = "page", description = "Page number for pagination", required = true, in = ParameterIn.QUERY, example = "0")
-    })
+            @Parameter(name = "page", description = "Page number for pagination", in = ParameterIn.QUERY, example = "1"),
+            @Parameter(name = "size", description = "Size of page", in = ParameterIn.QUERY, example = "10"),
+            @Parameter(name = "text", description = "Text for search in name or email", in = ParameterIn.QUERY, example = "pepito")})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Invalid pagination parameters",
                     content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping
-    public ResponseEntity<ResponseWrapper<Page<User>>> getAllUsers(@RequestParam(defaultValue = "0") int page) {
-        Page<User> users = userService.getAllUsers(page);
-        return ResponseHandler.generateResponse("Users fetched", HttpStatus.OK, users);
+    public ResponseEntity<ResponseWrapper<Page<User>>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "") String search) {
+        Page<User> users = userService.findUsersPageable(page, size, search);
+        return ResponseHandler.generateResponse("Users successfully fetched", HttpStatus.OK, users);
     }
 
     @Operation(summary = "Get user by ID")

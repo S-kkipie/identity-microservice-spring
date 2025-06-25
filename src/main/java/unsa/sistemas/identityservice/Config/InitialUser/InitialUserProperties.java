@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "initial-user")
+@ConfigurationProperties(prefix = "app.initial-user")
 public class InitialUserProperties {
     private String username;
     private String password;

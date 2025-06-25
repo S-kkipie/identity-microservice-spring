@@ -19,9 +19,9 @@ import java.util.Map;
 
 @Component
 public class JWTUtil {
-    @Value("${jwt.secret}")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
-    @Value("${jwt.expiration}")
+    @Value("${app.jwt.expiration}")
     private int jwtExpirationMs;
     private SecretKey key;
 
@@ -89,7 +89,7 @@ public class JWTUtil {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
+//TODO endpoint to refresh token
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         if (username != null) {
