@@ -154,6 +154,8 @@ public class IdentityController {
         }
     }
 
+    //TODO: refresh token endpoint
+
     private void authenticate(String username, String password) throws Exception {
         try {
             Authentication authenticationRequest =

@@ -1,11 +1,14 @@
 package unsa.sistemas.identityservice.Controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,6 @@ import unsa.sistemas.identityservice.Services.PrincipalUserService;
 import unsa.sistemas.identityservice.Utils.ResponseHandler;
 import unsa.sistemas.identityservice.Utils.ResponseWrapper;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -23,14 +25,17 @@ import java.util.List;
 public class PrincipalAdminController {
     private final PrincipalUserService principalUserService;
 
-    @Operation(summary = "Get all principal users")
+    @Operation(summary = "Get a list of users", parameters = {
+            @Parameter(name = "page", description = "Page number for pagination", required = true, in = ParameterIn.QUERY, example = "0")
+    })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "List of users", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "200", description = "Invalid pagination parameters",
+                    content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Error", content = @Content(mediaType = "application/json"))
     })
     @GetMapping
-    public ResponseEntity<ResponseWrapper<Object>> getAllUsers() {
-        List<PrincipalUser> users = principalUserService.getAllUsers();
+    public ResponseEntity<ResponseWrapper<Object>> getAllUsers(@RequestParam(defaultValue = "0") int page) {
+        Page<PrincipalUser> users = principalUserService.getAllUsers(page);
         return ResponseHandler.generateResponse("Users fetched", HttpStatus.OK, users);
     }
 
