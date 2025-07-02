@@ -36,3 +36,4 @@ logging:
 
 server:
   port: 9898
+debug: true

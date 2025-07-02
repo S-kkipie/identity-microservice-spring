@@ -2,6 +2,7 @@ package unsa.sistemas.identityservice.Config;
 
 
 import org.hibernate.cfg.AvailableSettings;
+import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -15,20 +16,21 @@ import java.util.Properties;
 @Getter
 public class HibernateProperties {
 
+    private final String username;
+    private final String password;
+    private final String driverClass;
+    private final String defaultUrl;
+    private final String platformUrl;
+    public HibernateProperties(JdbcConnectionDetails connectionDetails) {
+        this.username = connectionDetails.getUsername();
+        this.password = connectionDetails.getPassword();
+        this.driverClass = connectionDetails.getDriverClassName();
+        this.defaultUrl = connectionDetails.getJdbcUrl();
+        this.platformUrl = connectionDetails.getJdbcUrl();
+    }
+
     @Value("${connection.baseUrl}")
     private String baseUrl;
-
-    @Value("${connection.username}")
-    private String username;
-
-    @Value("${connection.password}")
-    private String password;
-
-    @Value("${connection.driver_class}")
-    private String driverClass;
-
-    @Value("${platform.database}")
-    private String platformDatabase;
 
     @Value("${tenant.database}")
     private String tenantDatabase;
@@ -45,9 +47,6 @@ public class HibernateProperties {
     @Value("${format_sql}")
     private String formatSql;
 
-    public String getPlatformUrl() {
-        return getBaseUrl() + "/" + getPlatformDatabase();
-    }
 
     public String getTenantUrl() {
         return getBaseUrl() + "/" + getTenantDatabase();
